@@ -21,16 +21,11 @@ count_tokens(Tokens) ->
 do_count_tokens([], Acc) ->
     Acc;
 do_count_tokens([H|Tokens], Acc) ->
-    case length(H) < 5 of
-        true ->
-            do_count_tokens(Tokens, Acc);
+    case lists:keyfind(H, 1, Acc) of
+        {H, Count} ->
+            do_count_tokens(Tokens, [{H, Count+1}|lists:delete({H, Count}, Acc)]);
         false ->
-            case lists:keyfind(H, 1, Acc) of
-                {H, Count} ->
-                    do_count_tokens(Tokens, [{H, Count+1}|lists:delete({H, Count}, Acc)]);
-                false ->
-                    do_count_tokens(Tokens, [{H, 1}|Acc])
-            end
+            do_count_tokens(Tokens, [{H, 1}|Acc])
     end.
 
 open_file(File) ->
